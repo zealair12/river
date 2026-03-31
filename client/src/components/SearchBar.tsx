@@ -1,0 +1,1 @@
+export function SearchBar(){return <input placeholder="Search any entity — name, wallet address, EIN, company" style={{width:'100%',padding:14,borderRadius:16,background:'var(--glass-bg)',border:'1px solid var(--glass-border)',color:'white'}}/>;}

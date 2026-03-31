@@ -1,0 +1,1 @@
+export function GlassBadge({ label, color }:{label:string;color:string}) { return <span style={{padding:'6px 10px',fontSize:12,textTransform:'uppercase',letterSpacing:'.08em',borderRadius:999,background:color}}>{label}</span>; }

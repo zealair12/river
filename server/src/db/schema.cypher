@@ -1,0 +1,6 @@
+// Entity nodes: (:Entity { id, name, type, metadata, sources, createdAt })
+// (:Entity)-[:DONATED_TO { amount, currency, date, source, cycle }]->(:Entity)
+// (:Entity)-[:OWNS { percentage, since, source }]->(:Entity)
+// (:Entity)-[:TRANSACTED_WITH { amount, currency, txHash, blockNumber, date }]->(:Entity)
+// (:Entity)-[:CONTROLS { role, since, source }]->(:Entity)
+// (:Entity)-[:LOBBIED { amount, issue, year, source }]->(:Entity)
