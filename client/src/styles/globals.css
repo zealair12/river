@@ -1,0 +1,12 @@
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-highlight: rgba(255, 255, 255, 0.08);
+  --accent-flow: #00E5C8; --accent-alert: #FF4D6A; --accent-crypto: #A78BFA; --accent-fiat: #34D399;
+  --surface-1: rgba(10, 12, 20, 0.95); --surface-2: rgba(18, 22, 34, 0.9);
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --node-person: #60A5FA; --node-company: #34D399; --node-wallet: #A78BFA; --node-pac: #F59E0B; --node-shell: #FF4D6A; --node-nonprofit: #67E8F9;
+}
+body { margin: 0; background: var(--surface-1); color: var(--text-primary); font-family: Inter, system-ui, sans-serif; }

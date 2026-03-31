@@ -1,0 +1,22 @@
+{
+  "name": "river-worker",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/queues/workers.js"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "bullmq": "^5.56.1",
+    "dotenv": "^16.4.5",
+    "ioredis": "^5.4.1",
+    "neo4j-driver": "^5.28.1",
+    "pg": "^8.14.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "@types/pg": "^8.20.0",
+    "typescript": "^5.8.2"
+  }
+}
