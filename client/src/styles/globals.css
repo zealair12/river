@@ -5,8 +5,155 @@
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   --glass-highlight: rgba(255, 255, 255, 0.08);
   --accent-flow: #00E5C8; --accent-alert: #FF4D6A; --accent-crypto: #A78BFA; --accent-fiat: #34D399;
-  --surface-1: rgba(10, 12, 20, 0.95); --surface-2: rgba(18, 22, 34, 0.9);
+  --surface-1: #0a1a14; --surface-2: rgba(10, 26, 20, 0.95);
   --text-primary: rgba(255, 255, 255, 0.92);
   --node-person: #60A5FA; --node-company: #34D399; --node-wallet: #A78BFA; --node-pac: #F59E0B; --node-shell: #FF4D6A; --node-nonprofit: #67E8F9;
 }
-body { margin: 0; background: var(--surface-1); color: var(--text-primary); font-family: Inter, system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--surface-1); color: var(--text-primary); font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+::selection { background: rgba(0, 229, 200, 0.3); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+@keyframes news-orbit-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.news-orbit-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 8px 2px 18px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.news-orbit-item {
+  flex-shrink: 0;
+  scroll-snap-align: center;
+  text-decoration: none;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 118px;
+  transition: opacity 0.15s;
+}
+
+.news-orbit-item:hover {
+  opacity: 0.92;
+}
+
+.news-orbit-motion {
+  animation: news-orbit-float 3.2s ease-in-out infinite;
+}
+
+.news-orbit-ring {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(0, 229, 200, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 12px 28px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.news-orbit-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.news-orbit-fallback {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(0, 229, 200, 0.55);
+}
+
+.news-orbit-title {
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.news-orbit-meta {
+  margin-top: 4px;
+  font-size: 9px;
+  opacity: 0.38;
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.entity-layout {
+  display: grid;
+  gap: 20px;
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 960px) {
+  .entity-layout--sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  }
+}
+
+.news-bubble {
+  will-change: transform;
+}
+
+.news-bubble--d1 { animation: bubble-drift-1 26s ease-in-out infinite; }
+.news-bubble--d2 { animation: bubble-drift-2 22s ease-in-out infinite; }
+.news-bubble--d3 { animation: bubble-drift-3 30s ease-in-out infinite; }
+.news-bubble--d4 { animation: bubble-drift-4 24s ease-in-out infinite; }
+.news-bubble--d5 { animation: bubble-drift-5 28s ease-in-out infinite; }
+
+@keyframes bubble-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(22px, -20px) scale(1.02); }
+  50% { transform: translate(-14px, 18px) scale(0.98); }
+  75% { transform: translate(16px, 12px) scale(1.01); }
+}
+
+@keyframes bubble-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-20px, 16px) scale(1.03); }
+  66% { transform: translate(18px, -22px) scale(0.97); }
+}
+
+@keyframes bubble-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(12px, 24px) scale(1.01); }
+  40% { transform: translate(-24px, -10px) scale(0.99); }
+  60% { transform: translate(20px, -18px) scale(1.02); }
+  80% { transform: translate(-8px, 14px) scale(1); }
+}
+
+@keyframes bubble-drift-4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-18px, -20px) scale(1.02); }
+}
+
+@keyframes bubble-drift-5 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(-16px, 22px) scale(0.98); }
+  75% { transform: translate(20px, -14px) scale(1.03); }
+}

@@ -15,5 +15,5 @@ export async function initNeo4j() {
   await runQuery('CREATE CONSTRAINT entity_id IF NOT EXISTS FOR (e:Entity) REQUIRE e.id IS UNIQUE');
   await runQuery('CREATE FULLTEXT INDEX entityNameIndex IF NOT EXISTS FOR (e:Entity) ON EACH [e.name]');
   await runQuery('CREATE INDEX entity_type IF NOT EXISTS FOR (e:Entity) ON (e.type)');
-  await runQuery('CREATE INDEX rel_date IF NOT EXISTS FOR ()-[r]-() ON (r.date)');
+  await runQuery('CREATE INDEX rel_date IF NOT EXISTS FOR ()-[r:TRANSACTED_WITH]-() ON (r.date)');
 }
