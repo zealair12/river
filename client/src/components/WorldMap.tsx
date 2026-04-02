@@ -280,13 +280,13 @@ export default function WorldMap() {
     renderer.domElement.addEventListener('mousemove', onMouseMove);
     renderer.domElement.addEventListener('click', onMouseClick);
 
-    const clock = new THREE.Clock();
+    const time0 = performance.now();
     let introProgress = 0;
     let currentCount = 0;
     let introNotified = false;
 
     function animate() {
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - time0) / 1000;
       introProgress = Math.min(1, elapsed / 3.0);
 
       mapGroup.children.forEach((child) => {

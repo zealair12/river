@@ -2,6 +2,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTraceBack } from '../context/TraceBackContext';
 import type { TraceEntry } from '../context/TraceBackContext';
+import { TracebackSessionsSection } from './TracebackSessionsSection';
+import { isTracebackApiConfigured } from '../lib/tracebackClient';
 
 const ASIDE_W = 368;
 const TOGGLE_W = 32;
@@ -226,15 +228,27 @@ export function TraceBackPanel() {
 
           {tab === 'tree' && (
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              {isTracebackApiConfigured() && <TracebackSessionsSection />}
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'flex-end',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  marginBottom: 10,
-                  flexShrink: 0
+                  marginBottom: 8,
+                  flexShrink: 0,
+                  gap: 8
                 }}
               >
+                <span
+                  style={{
+                    fontSize: 10,
+                    opacity: 0.38,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  River trail
+                </span>
                 <button
                   type="button"
                   onClick={clearEntries}

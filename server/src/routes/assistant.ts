@@ -34,6 +34,10 @@ ${contextBlock}`;
 
   const model = process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini';
 
+  const abortController = new AbortController();
+  const timeoutMs = 60_000;
+  const timeoutId = setTimeout(() => abortController.abort(), timeoutMs);
+
   try {
     const r = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -47,8 +51,9 @@ ${contextBlock}`;
         max_tokens: 900,
         messages: [{ role: 'system', content: system }, ...messages.map((m) => ({ role: m.role, content: m.content }))]
       }),
-      signal: AbortSignal.timeout(60000)
+      signal: abortController.signal
     });
+    clearTimeout(timeoutId);
 
     if (!r.ok) {
       const errText = await r.text();
@@ -67,7 +72,13 @@ ${contextBlock}`;
     }
     res.json({ reply: text });
   } catch (e) {
+    clearTimeout(timeoutId);
+    const aborted = e instanceof Error && e.name === 'AbortError';
     console.error('Assistant chat failed:', e);
-    res.status(500).json({ error: 'Assistant unavailable.' });
+    res.status(500).json({
+      error: aborted
+        ? 'Assistant request timed out.'
+        : 'Assistant unavailable. Check River server logs; ensure OPENAI_API_KEY is set in river/.env and the server was restarted.'
+    });
   }
 });

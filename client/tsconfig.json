@@ -5,7 +5,11 @@
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@traceback/shared": ["../../packages/traceback-shared/src/index.ts"]
+    }
   },
   "include": ["src"]
 }
