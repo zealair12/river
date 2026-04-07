@@ -66,7 +66,6 @@ export function TraceBackProvider({ children }: { children: ReactNode }) {
   });
 
   const pageCtxRef = useRef<Record<string, unknown>>({});
-  const lastPathRef = useRef<string | null>(null);
 
   const registerPageContext = useCallback((ctx: Record<string, unknown> | null) => {
     pageCtxRef.current = ctx ?? {};
@@ -96,8 +95,6 @@ export function TraceBackProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const path = location.pathname;
-    if (lastPathRef.current === path) return;
-    lastPathRef.current = path;
 
     const label =
       path === '/'
@@ -109,7 +106,9 @@ export function TraceBackProvider({ children }: { children: ReactNode }) {
             : path;
 
     setEntries((prev) => {
-      if (prev.length > 0 && prev[prev.length - 1].path === path) return prev;
+      if (prev.length > 0 && prev[prev.length - 1].path === path) {
+        return prev.map((e, i) => (i === prev.length - 1 ? { ...e, ts: Date.now(), label } : e));
+      }
       const id = crypto.randomUUID();
       const parentId = prev.length > 0 ? prev[prev.length - 1].id : null;
       return [...prev, { id, parentId, path, label, ts: Date.now() }];

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import LiquidGlass from 'liquid-glass-react';
+import { GlassPanel } from './GlassPanel';
 import FlowGraph from './FlowGraph';
 import { NewsBubbleField } from './NewsBubbleField';
 import type { OrbitNewsItem } from './NewsOrbitRow';
@@ -269,23 +269,17 @@ export default function EntityPage() {
             <div className="entity-layout">
               <div style={{ minWidth: 0 }}>
               {/* Header — Liquid Glass */}
-              <LiquidGlass
-                mouseContainer={pageRef}
-                displacementScale={50}
-                blurAmount={0.04}
-                saturation={140}
-                aberrationIntensity={1.5}
-                elasticity={0.18}
-                cornerRadius={18}
-                padding="24px"
-                style={{ marginBottom: 16 }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
-                  {stock?.profile?.logo && (
-                    <img src={stock.profile.logo} alt="" style={{ width: 44, height: 44, borderRadius: 10, background: 'white' }}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                  )}
-                  <div style={{ flex: 1 }}>
+              <GlassPanel radius={18} style={{ marginBottom: 16, padding: 24 }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'flex-start',
+                    gap: 14,
+                    marginBottom: 12
+                  }}
+                >
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <h1 style={{ margin: 0, fontSize: 26, fontWeight: 400, lineHeight: 1.2, paddingTop: 2 }}>{entity.name}</h1>
                     <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: `${color}15`, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{entity.type}</span>
@@ -294,6 +288,17 @@ export default function EntityPage() {
                       {stock?.profile?.exchange && <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.35)' }}>{stock.profile.exchange}</span>}
                     </div>
                   </div>
+                  {stock?.profile?.logo ? (
+                    <img
+                      src={stock.profile.logo}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      style={{ width: 52, height: 52, borderRadius: 10, background: 'white', flexShrink: 0, objectFit: 'contain' }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  ) : null}
                 </div>
 
                 {sq && (
@@ -315,7 +320,7 @@ export default function EntityPage() {
                     ))}
                   </div>
                 )}
-              </LiquidGlass>
+              </GlassPanel>
 
               {/* Stock chart */}
               {stock?.candles && (

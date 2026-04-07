@@ -7,6 +7,7 @@
     "worker"
   ],
   "scripts": {
+    "dev:api": "npm run dev -w server",
     "build": "npm run -w server build && npm run -w worker build && npm run -w client build"
   },
   "dependencies": {

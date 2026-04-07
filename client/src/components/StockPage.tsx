@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import LiquidGlass from 'liquid-glass-react';
+import { GlassPanel } from './GlassPanel';
 import { InteractivePriceChart } from './InteractivePriceChart';
 import { NewsBubbleField } from './NewsBubbleField';
 import type { OrbitNewsItem } from './NewsOrbitRow';
@@ -74,31 +74,34 @@ interface StockDetail {
   recommendations: AnalystRecommendationRow[];
 }
 
-function MetricChip({ acronym, title, value }: { acronym: string; title: string; value: string }) {
+function MetricBlock({ label, title, value }: { label: string; title?: string; value: string }) {
   return (
     <div
       title={title}
       style={{
-        padding: '10px 12px',
-        borderRadius: 10,
-        background: 'rgba(0,0,0,0.28)',
+        padding: '12px 14px',
+        borderRadius: 12,
+        background: 'rgba(0,0,0,0.22)',
         border: '1px solid rgba(255,255,255,0.08)',
-        minWidth: 76,
-        flex: '0 1 auto'
+        minHeight: 108,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        boxSizing: 'border-box'
       }}
     >
       <div
         style={{
-          fontSize: 9,
+          fontSize: 10,
           opacity: 0.42,
-          letterSpacing: '0.1em',
-          marginBottom: 5,
-          textTransform: 'uppercase'
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+          marginBottom: 6
         }}
       >
-        {acronym}
+        {label}
       </div>
-      <div style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.25, wordBreak: 'break-word' }}>{value}</div>
+      <div style={{ fontSize: 15, fontWeight: 500, lineHeight: 1.3, wordBreak: 'break-word' }}>{value}</div>
     </div>
   );
 }
@@ -172,30 +175,43 @@ export default function StockPage() {
     return () => ac.abort();
   }, [symbol, chartPreset, data]);
 
-  useEffect(() => {
-    if (!data?.quote) {
-      registerPageContext(null);
-      return;
-    }
-    const sym = symbol?.toUpperCase() ?? '';
-    registerPageContext({
-      type: 'stock',
-      symbol: sym,
-      quote: data.quote,
-      profile: data.profile,
-      newsHeadlines: (data.news ?? []).slice(0, 20).map((n) => n.headline),
-      newsSummaries: (data.news ?? []).slice(0, 8).map((n) => ({ headline: n.headline, source: n.source })),
-      recommendations: data.recommendations?.slice(0, 3)
-    });
-    return () => registerPageContext(null);
-  }, [data, symbol, registerPageContext]);
-
   const q = data?.quote;
   const p = data?.profile;
   const recommendations = data?.recommendations ?? [];
   const positive = (q?.changePercent ?? 0) >= 0;
 
   const displayAnalysis = useMemo(() => computeClientAnalysis(chartCandles), [chartCandles]);
+
+  useEffect(() => {
+    if (!data?.quote) {
+      registerPageContext(null);
+      return;
+    }
+    const sym = symbol?.toUpperCase() ?? '';
+    const presetLabel = CHART_PRESETS.find((p) => p.key === chartPreset)?.label ?? chartPreset;
+    registerPageContext({
+      type: 'stock',
+      symbol: sym,
+      quote: data.quote,
+      profile: data.profile,
+      serverAnalysis: data.analysis,
+      chartRange: {
+        preset: chartPreset,
+        presetLabel,
+        barCount: chartCandles?.closes?.length ?? 0,
+        clientComputedMetrics: displayAnalysis
+      },
+      recommendations: data.recommendations ?? [],
+      news: (data.news ?? []).slice(0, 30).map((n) => ({
+        headline: n.headline,
+        summary: n.summary,
+        source: n.source,
+        datetime: n.datetime,
+        url: n.url
+      }))
+    });
+    return () => registerPageContext(null);
+  }, [data, symbol, registerPageContext, displayAnalysis, chartPreset, chartCandles]);
 
   const orbitNews: OrbitNewsItem[] = (data?.news ?? []).map((article) => ({
     title: article.headline,
@@ -267,28 +283,16 @@ export default function StockPage() {
 
         {!loading && q && (
           <>
-            <LiquidGlass
-              mouseContainer={pageRef}
-              displacementScale={50}
-              blurAmount={0.04}
-              saturation={140}
-              aberrationIntensity={1.5}
-              elasticity={0.18}
-              cornerRadius={18}
-              padding="24px"
-              style={{ marginBottom: 20 }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
-                {p?.logo && (
-                  <img
-                    src={p.logo}
-                    alt=""
-                    style={{ width: 48, height: 48, borderRadius: 12, background: 'white', flexShrink: 0 }}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none';
-                    }}
-                  />
-                )}
+            <GlassPanel radius={18} style={{ marginBottom: 20, padding: 24 }}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(0, 1fr) minmax(96px, 120px)',
+                  alignItems: 'center',
+                  gap: 'clamp(12px, 3vw, 24px)',
+                  marginBottom: 12
+                }}
+              >
                 <div style={{ minWidth: 0 }}>
                   <h1 style={{ margin: 0, fontSize: 28, fontWeight: 400, lineHeight: 1.2, paddingTop: 2 }}>
                     {p?.name ?? symbol?.toUpperCase()}
@@ -309,6 +313,34 @@ export default function StockPage() {
                     {p?.industry && <span>· {p.industry}</span>}
                   </div>
                 </div>
+                {p?.logo ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: 96,
+                      width: '100%'
+                    }}
+                  >
+                    <img
+                      src={p.logo}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                      style={{
+                        width: '100%',
+                        maxWidth: 112,
+                        maxHeight: 112,
+                        height: 'auto',
+                        objectFit: 'contain',
+                        display: 'block'
+                      }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+                ) : null}
               </div>
 
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, flexWrap: 'wrap' }}>
@@ -319,7 +351,7 @@ export default function StockPage() {
                   {q.changePercent.toFixed(2)}%)
                 </span>
               </div>
-            </LiquidGlass>
+            </GlassPanel>
 
             {recommendations.length > 0 && (
               <div
@@ -430,39 +462,50 @@ export default function StockPage() {
                   <div style={{ fontSize: 12, opacity: 0.4, marginBottom: 8 }}>Loading range…</div>
                 )}
                 <InteractivePriceChart candles={chartCandles} />
+              </div>
+            )}
+
+            <div
+              style={{
+                padding: 20,
+                borderRadius: 16,
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                marginBottom: 28
+              }}
+            >
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(132px, 1fr))',
+                  gap: 10,
+                  alignItems: 'stretch'
+                }}
+              >
                 {displayAnalysis && (
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexWrap: 'wrap',
-                      gap: 8,
-                      marginTop: 16,
-                      paddingTop: 14,
-                      borderTop: '1px solid rgba(255,255,255,0.06)'
-                    }}
-                  >
-                    <MetricChip
-                      acronym="RET"
+                  <>
+                    <MetricBlock
+                      label="RET"
                       title="Total return over selected chart range (first to last close)"
                       value={`${displayAnalysis.periodReturnPct >= 0 ? '+' : ''}${displayAnalysis.periodReturnPct.toFixed(1)}%`}
                     />
-                    <MetricChip
-                      acronym="RNG"
+                    <MetricBlock
+                      label="RNG"
                       title="High–low range as % of period low"
                       value={`${displayAnalysis.rangePct.toFixed(1)}%`}
                     />
-                    <MetricChip
-                      acronym="H/L"
+                    <MetricBlock
+                      label="H/L"
                       title="Period high and low (closes)"
                       value={`${formatUsd(displayAnalysis.periodLow)} → ${formatUsd(displayAnalysis.periodHigh)}`}
                     />
-                    <MetricChip
-                      acronym="σd"
+                    <MetricBlock
+                      label="σd"
                       title="Std. dev. of daily close-to-close returns (%)"
                       value={`${displayAnalysis.volDailyPct.toFixed(2)}%`}
                     />
-                    <MetricChip
-                      acronym="V/μ"
+                    <MetricBlock
+                      label="V/μ"
                       title="Latest volume vs average volume in range"
                       value={
                         displayAnalysis.volumeVsAvg != null
@@ -470,55 +513,24 @@ export default function StockPage() {
                           : '—'
                       }
                     />
-                  </div>
+                  </>
                 )}
+                {[
+                  { label: 'Open', value: formatUsd(q.open) },
+                  { label: 'Previous Close', value: formatUsd(q.previousClose) },
+                  { label: 'Day High', value: formatUsd(q.high) },
+                  { label: 'Day Low', value: formatUsd(q.low) },
+                  ...(p
+                    ? [
+                        { label: 'Market Cap', value: formatUsd(p.marketCap) },
+                        { label: 'Country', value: p.country },
+                        { label: 'IPO Date', value: p.ipo }
+                      ]
+                    : [])
+                ].map((stat) => (
+                  <MetricBlock key={stat.label} label={stat.label} value={stat.value} />
+                ))}
               </div>
-            )}
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))',
-                gap: 10,
-                marginBottom: 28
-              }}
-            >
-              {[
-                { label: 'Open', value: formatUsd(q.open) },
-                { label: 'Previous Close', value: formatUsd(q.previousClose) },
-                { label: 'Day High', value: formatUsd(q.high) },
-                { label: 'Day Low', value: formatUsd(q.low) },
-                ...(p
-                  ? [
-                      { label: 'Market Cap', value: formatUsd(p.marketCap) },
-                      { label: 'Country', value: p.country },
-                      { label: 'IPO Date', value: p.ipo }
-                    ]
-                  : [])
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  style={{
-                    padding: '14px 16px',
-                    borderRadius: 12,
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid rgba(255,255,255,0.06)'
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: 10,
-                      textTransform: 'uppercase',
-                      opacity: 0.4,
-                      marginBottom: 6,
-                      letterSpacing: '0.05em'
-                    }}
-                  >
-                    {stat.label}
-                  </div>
-                  <div style={{ fontSize: 16, fontWeight: 500 }}>{stat.value}</div>
-                </div>
-              ))}
             </div>
           </>
         )}

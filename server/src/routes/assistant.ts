@@ -2,10 +2,20 @@ import { Router } from 'express';
 
 export const assistantRouter = Router();
 
+/** Groq uses an OpenAI-compatible chat endpoint. */
+const GROQ_CHAT = 'https://api.groq.com/openai/v1/chat/completions';
+const OPENAI_CHAT = 'https://api.openai.com/v1/chat/completions';
+
 assistantRouter.post('/assistant/chat', async (req, res) => {
-  const key = process.env.OPENAI_API_KEY?.trim();
+  const groqKey = process.env.GROQ_API_KEY?.trim();
+  const openaiKey = process.env.OPENAI_API_KEY?.trim();
+  const useGroq = Boolean(groqKey);
+  const key = groqKey || openaiKey;
+
   if (!key) {
-    res.status(503).json({ error: 'OPENAI_API_KEY is not configured on the server.' });
+    res.status(503).json({
+      error: 'No LLM key: set GROQ_API_KEY (e.g. in repo-root .env) or OPENAI_API_KEY.'
+    });
     return;
   }
 
@@ -21,25 +31,34 @@ assistantRouter.post('/assistant/chat', async (req, res) => {
   }
 
   const contextBlock = JSON.stringify(body.context ?? {}, null, 2);
-  const system = `You are Trace-back, a research assistant embedded in the River financial transparency app.
+  const system = `You are Trace-back, embedded in River (financial transparency). Help the user learn and understand.
 
-Rules:
-- Answer ONLY using the CONTEXT JSON below (quotes, profile, news headlines, notes, page path). Do not invent tickers, prices, or news.
-- If the user asks for something not present in CONTEXT, say clearly that you do not have that data in this session.
-- Be concise. Use bullet points when listing facts from news.
-- Never claim real-time market data beyond what appears in CONTEXT.
+Style:
+- Be brief and clear: short paragraphs, not essays. Enough detail to understand the idea—expand only if the user asks to go deeper.
+- Use GitHub-flavored Markdown: **bold** for emphasis, \`code\` for tickers/symbols, bullet lists for facts, ### for small section titles when helpful.
+- Inline math: use \\( ... \\) or \\[ ... \\] for LaTeX when formulas help; plain Unicode symbols are fine for simple expressions.
+- Emojis sparingly (only when they add clarity).
 
-CONTEXT:
+Ground truth:
+- For numbers, prices, company facts, or anything on-screen: use CONTEXT JSON below exactly. Do not invent quotes or live data.
+- You may use general knowledge for concepts (what an IPO is, how volatility works) when not contradicting CONTEXT.
+- If CONTEXT lacks a ticker-specific fact, say so and suggest viewing that company in River.
+
+CONTEXT (may be partial):
 ${contextBlock}`;
 
-  const model = process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini';
+  const model = useGroq
+    ? (process.env.GROQ_MODEL?.trim() || 'llama-3.3-70b-versatile')
+    : (process.env.OPENAI_MODEL?.trim() || 'gpt-4o-mini');
+
+  const url = useGroq ? GROQ_CHAT : OPENAI_CHAT;
 
   const abortController = new AbortController();
   const timeoutMs = 60_000;
   const timeoutId = setTimeout(() => abortController.abort(), timeoutMs);
 
   try {
-    const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    const r = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -47,8 +66,8 @@ ${contextBlock}`;
       },
       body: JSON.stringify({
         model,
-        temperature: 0.25,
-        max_tokens: 900,
+        temperature: 0.28,
+        max_tokens: 560,
         messages: [{ role: 'system', content: system }, ...messages.map((m) => ({ role: m.role, content: m.content }))]
       }),
       signal: abortController.signal
@@ -57,7 +76,7 @@ ${contextBlock}`;
 
     if (!r.ok) {
       const errText = await r.text();
-      console.error('OpenAI error:', r.status, errText);
+      console.error('LLM error:', r.status, errText);
       res.status(502).json({ error: 'Assistant request failed.' });
       return;
     }
@@ -78,7 +97,7 @@ ${contextBlock}`;
     res.status(500).json({
       error: aborted
         ? 'Assistant request timed out.'
-        : 'Assistant unavailable. Check River server logs; ensure OPENAI_API_KEY is set in river/.env and the server was restarted.'
+        : 'Assistant unavailable. Check server logs and GROQ_API_KEY / OPENAI_API_KEY.'
     });
   }
 });

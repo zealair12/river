@@ -8,29 +8,24 @@ import { TraceBackProvider, useTraceBack } from './context/TraceBackContext';
 
 const qc = new QueryClient();
 
+/** Width of fixed side panel + fixed caret (see TraceBackPanel). */
+const PANEL_W = 368;
+/** Full-height strip on the right edge toggles the Traceback panel (not only the chevron). */
+const CARET_W = 32;
+
 function AppShell() {
   const { panelOpen } = useTraceBack();
-  const gutter = panelOpen ? 400 : 32;
+  const padRight = (panelOpen ? PANEL_W : 0) + CARET_W;
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        width: '100%',
-        minHeight: '100vh',
-        maxWidth: '100vw',
-        background: '#060f0b',
-        boxSizing: 'border-box'
-      }}
-    >
+    <div style={{ minHeight: '100vh', width: '100%', maxWidth: '100vw', background: '#060f0b', position: 'relative' }}>
       <div
         style={{
-          flex: 1,
-          minWidth: 0,
+          paddingRight: padRight,
           minHeight: '100vh',
-          overflow: 'auto',
           boxSizing: 'border-box',
-          transition: 'flex-basis 0.28s cubic-bezier(0.22, 1, 0.36, 1)'
+          transition: 'padding-right 0.28s cubic-bezier(0.22, 1, 0.36, 1)',
+          width: '100%'
         }}
       >
         <Routes>
@@ -39,21 +34,7 @@ function AppShell() {
           <Route path="/stock/:symbol" element={<StockPage />} />
         </Routes>
       </div>
-      <div
-        style={{
-          width: gutter,
-          flexShrink: 0,
-          transition: 'width 0.28s cubic-bezier(0.22, 1, 0.36, 1)',
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'stretch',
-          borderLeft: panelOpen ? '1px solid rgba(0,229,200,0.14)' : 'none',
-          boxSizing: 'border-box',
-          background: 'rgba(6, 15, 11, 0.98)'
-        }}
-      >
-        <TraceBackPanel />
-      </div>
+      <TraceBackPanel panelWidth={PANEL_W} caretWidth={CARET_W} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
   project, type DataPoint
 } from './worldMapData';
 import { GlassPanel } from './GlassPanel';
+import { HomeGlassChrome } from './HomeGlassChrome';
 import { CategorySnapSlider, type CategoryFilter } from './CategorySnapSlider';
 
 const SCENE_W = 1000;
@@ -376,7 +377,7 @@ export default function WorldMap() {
         background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(4,8,6,0.7) 100%)'
       }} />
 
-      {/* Top chrome — CSS grid: logo | slider | stats (no overlap, no LiquidGlass transform bugs) */}
+      {/* Top chrome — CSS grid: logo | sector slider | stats */}
       <div
         style={{
           position: 'absolute',
@@ -393,15 +394,20 @@ export default function WorldMap() {
         }}
       >
         <div style={{ pointerEvents: 'auto', justifySelf: 'start', minWidth: 0 }}>
-          <GlassPanel radius={14} style={{ padding: '10px 18px' }}>
-            <span style={{
-              fontSize: 'clamp(18px, 2.2vw, 24px)', fontWeight: 300,
-              letterSpacing: '0.28em', color: 'rgba(255,255,255,0.92)',
-              whiteSpace: 'nowrap', display: 'block'
-            }}>
+          <HomeGlassChrome radius={14} ringPadding={2} contentStyle={{ padding: '10px 18px' }} highlightStrength={0.42}>
+            <span
+              style={{
+                fontSize: 'clamp(18px, 2.2vw, 24px)',
+                fontWeight: 300,
+                letterSpacing: '0.28em',
+                color: 'rgba(255,255,255,0.92)',
+                whiteSpace: 'nowrap',
+                display: 'block'
+              }}
+            >
               riVer
             </span>
-          </GlassPanel>
+          </HomeGlassChrome>
         </div>
 
         <div style={{ pointerEvents: 'auto', justifySelf: 'center', width: '100%', minWidth: 0, display: 'flex', justifyContent: 'center' }}>

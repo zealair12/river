@@ -4,8 +4,9 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-/** Prefer monorepo `river/.env`, then optional `river/server/.env` overrides. */
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+/** Traceback repo root (`GROQ_API_KEY`, etc.), then `river/.env`, then `river/server/.env` (later wins). */
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: true });
 dotenv.config({ path: path.resolve(__dirname, '../.env'), override: true });
 import express from 'express';
 import helmet from 'helmet';

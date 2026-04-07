@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GlassPanel } from './GlassPanel';
+import { HomeGlassChrome } from './HomeGlassChrome';
 
 interface SearchBarProps {
   onEntitySelected?: (entityId: string) => void;
@@ -98,32 +98,34 @@ export function SearchBar({ onEntitySelected }: SearchBarProps) {
 
   return (
     <div ref={wrapperRef} style={{ width: '100%', position: 'relative', zIndex: 1 }}>
-      <GlassPanel radius={22} style={{ width: '100%' }}>
+      <HomeGlassChrome radius={20} ringPadding={2} style={{ width: '100%' }}>
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch();
+          }}
           placeholder="Search companies..."
           style={{
             width: '100%',
             padding: '22px 28px',
-            background: 'rgba(0,0,0,0.25)',
+            background: 'transparent',
             border: 'none',
             color: 'white',
             fontSize: 18,
             outline: 'none',
             boxSizing: 'border-box',
-            borderRadius: 18
+            borderRadius: 20
           }}
         />
-      </GlassPanel>
+      </HomeGlassChrome>
 
       {loading && <p style={{ marginTop: 12, opacity: 0.5, fontSize: 14, textAlign: 'center' }}>Searching...</p>}
       {error && <p style={{ marginTop: 12, color: '#fca5a5', fontSize: 14, textAlign: 'center' }}>{error}</p>}
 
       {results.length > 0 && (
         <div style={{ marginTop: 8, position: 'relative', zIndex: 1 }}>
-          <GlassPanel radius={18} style={{ width: '100%', maxHeight: 400, overflow: 'hidden' }}>
+          <HomeGlassChrome radius={16} ringPadding={2} style={{ width: '100%', maxHeight: 400, overflow: 'hidden' }}>
             <div style={{ maxHeight: 400, overflowY: 'auto' }}>
               {results.map((r, i) => {
                 const color = TYPE_COLORS[r.type] ?? '#94a3b8';
@@ -180,7 +182,7 @@ export function SearchBar({ onEntitySelected }: SearchBarProps) {
                 );
               })}
             </div>
-          </GlassPanel>
+          </HomeGlassChrome>
         </div>
       )}
     </div>

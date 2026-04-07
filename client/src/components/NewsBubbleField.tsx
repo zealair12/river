@@ -203,32 +203,44 @@ function PhysicsBubble({ x, y, r, item }: { x: number; y: number; r: number; ite
       <img
         src={src}
         alt=""
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.42 }}
         onError={(e) => {
           const el = e.target as HTMLImageElement;
           if (el.src !== fb) el.src = fb;
           else el.style.display = 'none';
         }}
       />
-      <span
+      <div
         style={{
           position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          padding: '4px 6px',
-          fontSize: 10,
-          lineHeight: 1.2,
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',
-          color: 'rgba(255,255,255,0.9)',
-          overflow: 'hidden',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical'
+          inset: 6,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2,
+          pointerEvents: 'none',
+          padding: 4
         }}
       >
-        {item.title}
-      </span>
+        <span
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 4,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textAlign: 'center',
+            fontSize: 10,
+            lineHeight: 1.25,
+            fontWeight: 500,
+            color: 'rgba(255,255,255,0.96)',
+            textShadow: '0 1px 4px rgba(0,0,0,0.95)',
+            wordBreak: 'break-word',
+            maxWidth: '100%'
+          }}
+        >
+          {item.title}
+        </span>
+      </div>
     </a>
   );
 }
