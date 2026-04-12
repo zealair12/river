@@ -8,8 +8,10 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@dagrejs/dagre": "^2.0.4",
     "@tanstack/react-query": "^5.68.0",
-    "@traceback/shared": "file:../../packages/traceback-shared",
+    "@traceback/shared": "file:../packages/traceback-shared",
+    "@xyflow/react": "^12.10.1",
     "axios": "^1.13.6",
     "cytoscape": "^3.31.2",
     "cytoscape-fcose": "^2.2.0",
