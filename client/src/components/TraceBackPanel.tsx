@@ -550,6 +550,11 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
                       onDeleteSubtree={handleTraceTreeDelete}
                     />
                   )
+                ) : isTracebackApiConfigured() && !activeTracebackSessionId ? (
+                  <div style={{ fontSize: 12, opacity: 0.45, lineHeight: 1.5 }}>
+                    Send a message in the Chat tab to create a Traceback session; the tree will load here from the same API
+                    as the standalone Traceback app.
+                  </div>
                 ) : (
                   <>
                     <div
