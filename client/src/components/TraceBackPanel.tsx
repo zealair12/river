@@ -4,7 +4,8 @@ import { useTraceBack } from '../context/TraceBackContext';
 import { TracebackSessionsSection } from './TracebackSessionsSection';
 import { getTracebackClient, isTracebackApiConfigured } from '../lib/tracebackClient';
 import { ChatMarkdown } from './ChatMarkdown';
-import { LocalConversationTrace, TracebackServerTree } from './ChatConversationTrace';
+import { LocalConversationTrace } from './ChatConversationTrace';
+import { TracebackConversationTree } from './traceback/TracebackConversationTree';
 import {
   createEmptySession,
   deriveChatTitle,
@@ -48,6 +49,8 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
 
   const [selectionMenu, setSelectionMenu] = useState<null | { x: number; y: number; text: string }>(null);
   const [serverTraceMessages, setServerTraceMessages] = useState<MessageResponse[] | null>(null);
+  /** Assistant message id for tree highlight (matches Traceback web app active leaf). */
+  const [treeAssistantFocusId, setTreeAssistantFocusId] = useState<string | null>(null);
 
   const activeTracebackSessionId = useMemo(
     () => chatSessions.find((s) => s.id === activeChatId)?.tracebackSessionId ?? null,
@@ -66,24 +69,34 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
 
   useEffect(() => {
     if (tab !== 'tree') return;
-    const client = getTracebackClient();
-    if (!client || !activeTracebackSessionId) {
-      setServerTraceMessages(null);
-      return;
-    }
     let cancelled = false;
-    client
-      .fetchSessionMessages(activeTracebackSessionId)
-      .then((msgs) => {
-        if (!cancelled) setServerTraceMessages(msgs);
-      })
-      .catch(() => {
+    void (async () => {
+      const client = getTracebackClient();
+      if (!client || !activeTracebackSessionId) {
         if (!cancelled) setServerTraceMessages(null);
-      });
+        return;
+      }
+      try {
+        const msgs = await client.fetchSessionMessages(activeTracebackSessionId);
+        if (!cancelled) setServerTraceMessages(msgs);
+      } catch {
+        if (!cancelled) setServerTraceMessages(null);
+      }
+    })();
     return () => {
       cancelled = true;
     };
-  }, [tab, activeTracebackSessionId]);
+  }, [tab, activeTracebackSessionId, chatMessages.length]);
+
+  useEffect(() => {
+    if (!serverTraceMessages?.length) return;
+    setTreeAssistantFocusId((prev) => {
+      if (prev && serverTraceMessages.some((m) => m.id === prev)) return prev;
+      const assistants = serverTraceMessages.filter((m) => m.role === 'assistant');
+      if (assistants.length === 0) return null;
+      return assistants.reduce((a, b) => (a.depth >= b.depth ? a : b)).id;
+    });
+  }, [serverTraceMessages]);
 
   useEffect(() => {
     saveChatSessionsState(activeChatId, chatSessions);
@@ -106,6 +119,7 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
     setChatMessages(s.messages);
     tbSessionIdRef.current = s.tracebackSessionId ?? null;
     tbParentIdRef.current = s.tracebackParentId ?? null;
+    setTreeAssistantFocusId(s.tracebackParentId ?? null);
   }, [chatSessions]);
 
   const newChatSession = useCallback(() => {
@@ -115,6 +129,8 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
     setChatMessages([]);
     tbSessionIdRef.current = null;
     tbParentIdRef.current = null;
+    setTreeAssistantFocusId(null);
+    setServerTraceMessages(null);
   }, []);
 
   const sendChat = useCallback(async () => {
@@ -158,6 +174,13 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
           await client.updateSessionName(sessionId, title);
         } catch {
           /* optional */
+        }
+        setTreeAssistantFocusId(result.assistantMessage.id);
+        try {
+          const msgs = await client.fetchSessionMessages(sessionId);
+          setServerTraceMessages(msgs);
+        } catch {
+          /* ignore */
         }
       } catch (e) {
         setChatMessages((prev) => [
@@ -236,6 +259,38 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
     void navigator.clipboard.writeText(t);
     setSelectionMenu(null);
   }, []);
+
+  const handleTraceTreeSelectUser = useCallback(
+    (userMessageId: string) => {
+      const msgs = serverTraceMessages;
+      if (!msgs?.length) return;
+      const assistant = msgs.find((m) => m.parentId === userMessageId && m.role === 'assistant');
+      setTreeAssistantFocusId(assistant?.id ?? userMessageId);
+      setTab('chat');
+    },
+    [serverTraceMessages]
+  );
+
+  const handleTraceTreeDelete = useCallback(
+    async (userMessageId: string) => {
+      const client = getTracebackClient();
+      const sid = activeTracebackSessionId;
+      if (!client || !sid) return;
+      try {
+        await client.deleteSubtree(userMessageId);
+        const msgs = await client.fetchSessionMessages(sid);
+        setServerTraceMessages(msgs);
+        setTreeAssistantFocusId((prev) => {
+          if (prev && msgs.some((m) => m.id === prev)) return prev;
+          const assistants = msgs.filter((m) => m.role === 'assistant');
+          return assistants.length ? assistants.reduce((a, b) => (a.depth >= b.depth ? a : b)).id : null;
+        });
+      } catch {
+        /* ignore */
+      }
+    },
+    [activeTracebackSessionId]
+  );
 
   const zPanel = 90;
   const zCaret = 91;
@@ -482,33 +537,44 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
             )}
 
             {tab === 'tree' && (
-              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: 12 }}>
                 {isTracebackApiConfigured() && <TracebackSessionsSection />}
-                <div
-                  style={{
-                    fontSize: 10,
-                    opacity: 0.42,
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                    marginBottom: 10,
-                    flexShrink: 0
-                  }}
-                >
-                  This chat
-                </div>
-                <div
-                  style={{
-                    flex: 1,
-                    overflowY: 'auto',
-                    minHeight: 0,
-                    paddingRight: 4
-                  }}
-                >
-                  <LocalConversationTrace messages={chatMessages} />
-                  {serverTraceMessages && serverTraceMessages.length > 0 && (
-                    <TracebackServerTree messages={serverTraceMessages} />
-                  )}
-                </div>
+                {isTracebackApiConfigured() && activeTracebackSessionId ? (
+                  serverTraceMessages === null ? (
+                    <div style={{ fontSize: 12, opacity: 0.45 }}>Loading tree…</div>
+                  ) : (
+                    <TracebackConversationTree
+                      messages={serverTraceMessages}
+                      activeMessageId={treeAssistantFocusId}
+                      onSelectUserNode={handleTraceTreeSelectUser}
+                      onDeleteSubtree={handleTraceTreeDelete}
+                    />
+                  )
+                ) : (
+                  <>
+                    <div
+                      style={{
+                        fontSize: 10,
+                        opacity: 0.42,
+                        letterSpacing: '0.08em',
+                        textTransform: 'uppercase',
+                        flexShrink: 0
+                      }}
+                    >
+                      This chat (local)
+                    </div>
+                    <div style={{ flex: 1, overflowY: 'auto', minHeight: 0, paddingRight: 4 }}>
+                      <LocalConversationTrace messages={chatMessages} />
+                    </div>
+                    {!isTracebackApiConfigured() && (
+                      <div style={{ fontSize: 11, opacity: 0.4, lineHeight: 1.45, flexShrink: 0 }}>
+                        Set <code style={{ fontSize: 10 }}>VITE_TRACEBACK_API_URL</code> (e.g.{' '}
+                        <code style={{ fontSize: 10 }}>/traceback-api</code> with Vite proxy) and run the Traceback API on
+                        port 4000 for the same branching tree as the standalone app.
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             )}
           </div>

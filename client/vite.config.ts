@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@traceback/shared': path.resolve(__dirname, '../../packages/traceback-shared/src/index.ts')
+      '@traceback/shared': path.resolve(__dirname, '../packages/traceback-shared/src/index.ts')
     }
   },
   server: {

@@ -1,4 +1,3 @@
-import type { MessageResponse } from '@traceback/shared';
 import type { ChatMessageRow } from './chatSessionsStorage';
 
 function excerpt(s: string, max = 120): string {
@@ -86,56 +85,6 @@ export function LocalConversationTrace({ messages }: { messages: ChatMessageRow[
             )}
           </div>
         </div>
-      ))}
-    </div>
-  );
-}
-
-function ServerTreeNode({ m, all, depth }: { m: MessageResponse; all: MessageResponse[]; depth: number }) {
-  const kids = all.filter((c) => c.parentId === m.id);
-  return (
-    <div style={{ marginLeft: Math.min(depth * 14, 56), marginBottom: 8 }}>
-      <div
-        style={{
-          borderRadius: 8,
-          padding: '8px 10px',
-          background: m.role === 'user' ? 'rgba(0,229,200,0.08)' : 'rgba(255,255,255,0.05)',
-          border: `1px solid ${m.role === 'user' ? 'rgba(0,229,200,0.2)' : 'rgba(255,255,255,0.08)'}`,
-          fontSize: 11,
-          lineHeight: 1.4
-        }}
-      >
-        <span style={{ opacity: 0.45, marginRight: 6 }}>{m.role}</span>
-        {excerpt(m.content, 160)}
-      </div>
-      {kids.map((c) => (
-        <ServerTreeNode key={c.id} m={c} all={all} depth={depth + 1} />
-      ))}
-    </div>
-  );
-}
-
-/** Branching tree from Traceback server (shared API with traceback app). */
-export function TracebackServerTree({ messages }: { messages: MessageResponse[] }) {
-  if (messages.length === 0) return null;
-  const byId = new Map(messages.map((m) => [m.id, m]));
-  const roots = messages.filter((m) => !m.parentId || !byId.has(m.parentId));
-  if (roots.length === 0) return null;
-  return (
-    <div style={{ marginTop: 16 }}>
-      <div
-        style={{
-          fontSize: 10,
-          opacity: 0.4,
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-          marginBottom: 10
-        }}
-      >
-        Traceback server (branches)
-      </div>
-      {roots.map((r) => (
-        <ServerTreeNode key={r.id} m={r} all={messages} depth={0} />
       ))}
     </div>
   );
