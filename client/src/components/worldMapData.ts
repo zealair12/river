@@ -93,7 +93,7 @@ export const CONNECTIONS: [string, string, number][] = [
 ];
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  exchange: '#00E5C8',
+  exchange: '#2ECC71',
   banking: '#A78BFA',
   political: '#F59E0B',
   crypto: '#FF4D6A',

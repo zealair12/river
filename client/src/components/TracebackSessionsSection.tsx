@@ -90,7 +90,7 @@ export function TracebackSessionsSection() {
           display: 'inline-block',
           marginTop: 10,
           fontSize: 11,
-          color: 'rgba(0,229,200,0.85)',
+          color: 'rgba(46, 204, 113,0.85)',
           textDecoration: 'none',
           opacity: 0.9
         }}

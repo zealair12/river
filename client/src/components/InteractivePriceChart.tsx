@@ -128,7 +128,7 @@ export function InteractivePriceChart({ candles }: { candles: CandleSeries }) {
               y1={PAD_T}
               x2={hover.px}
               y2={PAD_T + (H - PAD_T - PAD_B)}
-              stroke="rgba(0,229,200,0.45)"
+              stroke="rgba(46, 204, 113,0.45)"
               strokeWidth={1}
               strokeDasharray="4 4"
             />
@@ -145,7 +145,7 @@ export function InteractivePriceChart({ candles }: { candles: CandleSeries }) {
             padding: '8px 12px',
             borderRadius: 10,
             background: 'rgba(6, 15, 11, 0.92)',
-            border: '1px solid rgba(0,229,200,0.25)',
+            border: '1px solid rgba(46, 204, 113,0.25)',
             fontSize: 12,
             lineHeight: 1.45,
             pointerEvents: 'none',

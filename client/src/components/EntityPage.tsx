@@ -284,7 +284,7 @@ export default function EntityPage() {
                     <div style={{ display: 'flex', gap: 6, marginTop: 6, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: `${color}15`, color, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{entity.type}</span>
                       <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.4)' }}>{entity.source}</span>
-                      {stock?.profile?.industry && <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: 'rgba(0,229,200,0.08)', color: 'rgba(0,229,200,0.7)' }}>{stock.profile.industry}</span>}
+                      {stock?.profile?.industry && <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: 'rgba(46, 204, 113,0.08)', color: 'rgba(46, 204, 113,0.7)' }}>{stock.profile.industry}</span>}
                       {stock?.profile?.exchange && <span style={{ fontSize: 10, padding: '2px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.35)' }}>{stock.profile.exchange}</span>}
                     </div>
                   </div>
@@ -366,7 +366,7 @@ export default function EntityPage() {
                     {moneyFlows.slice(0, 30).map((flow) => (
                       <button key={flow.id} type="button" onClick={() => navigate(`/entity/${encodeURIComponent(flow.counterpartyId)}`)}
                         style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '10px 12px', borderRadius: 8, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: 'white', cursor: 'pointer', textAlign: 'left', transition: 'background 0.15s' }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,229,200,0.05)'; }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(46, 204, 113,0.05)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}>
                         <span style={{ fontSize: 16, color: flow.outgoing ? '#fca5a5' : '#86efac', width: 16 }}>{flow.outgoing ? '→' : '←'}</span>
                         <span style={{ flex: 1, minWidth: 0, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{flow.counterpartyName}</span>

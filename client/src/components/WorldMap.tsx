@@ -14,7 +14,7 @@ import { CategorySnapSlider, type CategoryFilter } from './CategorySnapSlider';
 
 const SCENE_W = 1000;
 const SCENE_H = 500;
-const DOT_COLOR = '#00E5C8';
+const DOT_COLOR = '#2ECC71';
 
 const worldGeo = feature(worldTopo as any, (worldTopo as any).objects.countries) as any;
 
@@ -433,7 +433,7 @@ export default function WorldMap() {
               <div style={{ width: 1, height: 22, background: 'rgba(255,255,255,0.08)' }} />
               <div style={{ textAlign: 'right' }}>
                 <div style={{ fontSize: 9, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(255,255,255,0.35)', marginBottom: 2 }}>Flows</div>
-                <div style={{ fontSize: 'clamp(18px, 2vw, 24px)', fontWeight: 200, fontFamily: 'Georgia, serif', color: 'rgba(0,229,200,0.85)', lineHeight: 1 }}>{filteredFlowCount}</div>
+                <div style={{ fontSize: 'clamp(18px, 2vw, 24px)', fontWeight: 200, fontFamily: 'Georgia, serif', color: 'rgba(46, 204, 113,0.85)', lineHeight: 1 }}>{filteredFlowCount}</div>
               </div>
             </div>
           </GlassPanel>
@@ -478,7 +478,7 @@ export default function WorldMap() {
             borderTop: '1px solid rgba(255,255,255,0.18)',
             borderRadius: 16,
             padding: '16px 20px',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,229,200,0.06), inset 0 1px 0 rgba(255,255,255,0.06)'
+            boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 30px rgba(46, 204, 113,0.06), inset 0 1px 0 rgba(255,255,255,0.06)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: DOT_COLOR, boxShadow: `0 0 10px ${DOT_COLOR}` }} />

@@ -164,7 +164,7 @@ export function NewsBubbleField({ items }: { items: OrbitNewsItem[] }) {
         minHeight: 'min(52vh, 560px)',
         borderRadius: 16,
         overflow: 'hidden',
-        background: 'radial-gradient(ellipse at 30% 20%, rgba(0,229,200,0.06) 0%, transparent 50%), rgba(255,255,255,0.02)',
+        background: 'radial-gradient(ellipse at 30% 20%, rgba(46, 204, 113,0.06) 0%, transparent 50%), rgba(255,255,255,0.02)',
         border: '1px solid rgba(255,255,255,0.06)'
       }}
     >
@@ -194,7 +194,7 @@ function PhysicsBubble({ x, y, r, item }: { x: number; y: number; r: number; ite
         marginTop: -r,
         borderRadius: '50%',
         overflow: 'hidden',
-        border: '2px solid rgba(0, 229, 200, 0.22)',
+        border: '2px solid rgba(46, 204, 113, 0.22)',
         boxShadow: '0 12px 32px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.06)',
         zIndex: 1,
         willChange: 'transform'

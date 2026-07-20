@@ -147,7 +147,7 @@ export default function FlowGraph({ nodes, edges, currentEntityId, onNodeClick }
         if (!a || !b) continue;
 
         const isDonation = e.type === 'DONATED_TO';
-        const color = isDonation ? 'rgba(0,229,200,0.5)' : 'rgba(255,255,255,0.1)';
+        const color = isDonation ? 'rgba(46, 204, 113,0.5)' : 'rgba(255,255,255,0.1)';
         const width = isDonation ? Math.min(4, 1 + Math.log10((e.amount ?? 1) + 1) * 0.6) : 1;
 
         ctx.beginPath();
@@ -167,7 +167,7 @@ export default function FlowGraph({ nodes, edges, currentEntityId, onNodeClick }
           ctx.lineTo(mx + Math.cos(angle + 2.5) * arrowSize, my + Math.sin(angle + 2.5) * arrowSize);
           ctx.lineTo(mx + Math.cos(angle - 2.5) * arrowSize, my + Math.sin(angle - 2.5) * arrowSize);
           ctx.closePath();
-          ctx.fillStyle = 'rgba(0,229,200,0.7)';
+          ctx.fillStyle = 'rgba(46, 204, 113,0.7)';
           ctx.fill();
         }
 
@@ -175,7 +175,7 @@ export default function FlowGraph({ nodes, edges, currentEntityId, onNodeClick }
           const mx = (a.x + b.x) / 2;
           const my = (a.y + b.y) / 2 - 8;
           ctx.font = '10px Inter, system-ui, sans-serif';
-          ctx.fillStyle = 'rgba(0,229,200,0.8)';
+          ctx.fillStyle = 'rgba(46, 204, 113,0.8)';
           ctx.textAlign = 'center';
           ctx.fillText(`$${e.amount.toLocaleString()}`, mx, my);
         }

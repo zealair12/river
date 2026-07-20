@@ -36,7 +36,7 @@ export function LocalConversationTrace({ messages }: { messages: ChatMessageRow[
           left: 4,
           top: 10,
           bottom: 10,
-          borderLeft: '1px dashed rgba(0,229,200,0.35)'
+          borderLeft: '1px dashed rgba(46, 204, 113,0.35)'
         }}
       />
       {pairs.map((p, idx) => (
@@ -50,8 +50,8 @@ export function LocalConversationTrace({ messages }: { messages: ChatMessageRow[
               width: 8,
               height: 8,
               borderRadius: '50%',
-              background: 'rgba(0,229,200,0.55)',
-              border: '1px solid rgba(0,229,200,0.5)'
+              background: 'rgba(46, 204, 113,0.55)',
+              border: '1px solid rgba(46, 204, 113,0.5)'
             }}
           />
           <div

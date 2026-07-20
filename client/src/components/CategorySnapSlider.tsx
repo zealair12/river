@@ -326,7 +326,7 @@ export function CategorySnapSlider({ options, value, onChange }: CategorySnapSli
               background: `conic-gradient(from ${prismAngle}deg,
                 rgba(255,255,255,0) 0%,
                 rgba(255,255,255,0.18) 22%,
-                rgba(0,229,200,0.2) 48%,
+                rgba(46, 204, 113,0.2) 48%,
                 rgba(255,255,255,0.1) 72%,
                 rgba(255,255,255,0) 100%)`,
               boxSizing: 'border-box'
@@ -383,7 +383,7 @@ export function CategorySnapSlider({ options, value, onChange }: CategorySnapSli
                   zIndex: 1,
                   borderRadius: 16,
                   pointerEvents: 'none',
-                  background: 'linear-gradient(145deg, rgba(0,229,200,0.06) 0%, transparent 55%)'
+                  background: 'linear-gradient(145deg, rgba(46, 204, 113,0.06) 0%, transparent 55%)'
                 }}
               />
               {!dragging && (

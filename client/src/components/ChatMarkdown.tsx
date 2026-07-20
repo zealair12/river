@@ -50,7 +50,7 @@ const mdComponents: Components = {
         style={{
           padding: '2px 5px',
           borderRadius: 4,
-          background: 'rgba(0,229,200,0.1)',
+          background: 'rgba(46, 204, 113,0.1)',
           fontSize: '0.92em',
           border: '1px solid rgba(255,255,255,0.08)'
         }}
@@ -66,7 +66,7 @@ const mdComponents: Components = {
       style={{
         margin: '0.45em 0',
         paddingLeft: 12,
-        borderLeft: '3px solid rgba(0,229,200,0.35)',
+        borderLeft: '3px solid rgba(46, 204, 113,0.35)',
         opacity: 0.92
       }}
     >

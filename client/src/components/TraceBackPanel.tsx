@@ -311,7 +311,7 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
           display: 'flex',
           flexDirection: 'column',
           background: 'rgba(6, 15, 11, 0.98)',
-          borderLeft: panelOpen ? '1px solid rgba(0,229,200,0.14)' : 'none',
+          borderLeft: panelOpen ? '1px solid rgba(46, 204, 113,0.14)' : 'none',
           boxShadow: panelOpen ? '-8px 0 32px rgba(0,0,0,0.35)' : 'none',
           zIndex: zPanel,
           pointerEvents: panelOpen ? 'auto' : 'none',
@@ -352,8 +352,8 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
                   fontSize: 11,
                   textTransform: 'uppercase',
                   letterSpacing: '0.06em',
-                  background: tab === t ? 'rgba(0,229,200,0.14)' : 'transparent',
-                  color: tab === t ? 'rgba(0,229,200,0.95)' : 'rgba(255,255,255,0.4)'
+                  background: tab === t ? 'rgba(46, 204, 113,0.14)' : 'transparent',
+                  color: tab === t ? 'rgba(46, 204, 113,0.95)' : 'rgba(255,255,255,0.4)'
                 }}
               >
                 {t === 'tree' ? 'trace' : t}
@@ -438,9 +438,9 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
                       fontSize: 11,
                       padding: '6px 10px',
                       borderRadius: 8,
-                      border: '1px solid rgba(0,229,200,0.35)',
-                      background: 'rgba(0,229,200,0.08)',
-                      color: 'rgba(0,229,200,0.9)',
+                      border: '1px solid rgba(46, 204, 113,0.35)',
+                      background: 'rgba(46, 204, 113,0.08)',
+                      color: 'rgba(46, 204, 113,0.9)',
                       cursor: 'pointer',
                       whiteSpace: 'nowrap'
                     }}
@@ -484,7 +484,7 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
                         borderRadius: 10,
                         fontSize: 12,
                         lineHeight: 1.45,
-                        background: m.role === 'user' ? 'rgba(0,229,200,0.12)' : 'rgba(255,255,255,0.05)',
+                        background: m.role === 'user' ? 'rgba(46, 204, 113,0.12)' : 'rgba(255,255,255,0.05)',
                         border: '1px solid rgba(255,255,255,0.06)',
                         color: 'rgba(255,255,255,0.9)',
                         whiteSpace: m.role === 'user' ? 'pre-wrap' : 'normal'
@@ -523,9 +523,9 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
                     style={{
                       padding: '10px 14px',
                       borderRadius: 10,
-                      border: '1px solid rgba(0,229,200,0.35)',
-                      background: 'rgba(0,229,200,0.12)',
-                      color: 'rgba(0,229,200,0.95)',
+                      border: '1px solid rgba(46, 204, 113,0.35)',
+                      background: 'rgba(46, 204, 113,0.12)',
+                      color: 'rgba(46, 204, 113,0.95)',
                       cursor: chatLoading ? 'wait' : 'pointer',
                       fontSize: 12
                     }}
@@ -705,9 +705,9 @@ export function TraceBackPanel({ panelWidth, caretWidth }: TraceBackPanelProps) 
           padding: 0,
           margin: 0,
           border: 'none',
-          borderLeft: '1px solid rgba(0,229,200,0.12)',
+          borderLeft: '1px solid rgba(46, 204, 113,0.12)',
           background: panelOpen ? 'rgba(6, 15, 11, 0.55)' : 'rgba(6, 15, 11, 0.25)',
-          color: 'rgba(0,229,200,0.85)',
+          color: 'rgba(46, 204, 113,0.85)',
           cursor: 'pointer',
           fontSize: 18,
           fontWeight: 400,

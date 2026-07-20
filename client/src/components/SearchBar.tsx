@@ -15,7 +15,7 @@ interface SearchResult {
 }
 
 const TYPE_COLORS: Record<string, string> = {
-  stock: '#00E5C8',
+  stock: '#2ECC71',
   company: '#34D399',
   pac: '#F59E0B',
   person: '#60A5FA',
@@ -155,7 +155,7 @@ export function SearchBar({ onEntitySelected }: SearchBarProps) {
                       fontSize: 15,
                       transition: 'background 0.15s'
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,229,200,0.08)'; }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(46, 204, 113,0.08)'; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                   >
                     <span style={{

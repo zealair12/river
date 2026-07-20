@@ -444,10 +444,10 @@ export default function StockPage() {
                           borderRadius: 8,
                           border:
                             chartPreset === pr.key
-                              ? '1px solid rgba(0,229,200,0.45)'
+                              ? '1px solid rgba(46, 204, 113,0.45)'
                               : '1px solid rgba(255,255,255,0.1)',
-                          background: chartPreset === pr.key ? 'rgba(0,229,200,0.1)' : 'rgba(0,0,0,0.2)',
-                          color: chartPreset === pr.key ? 'rgba(0,229,200,0.95)' : 'rgba(255,255,255,0.55)',
+                          background: chartPreset === pr.key ? 'rgba(46, 204, 113,0.1)' : 'rgba(0,0,0,0.2)',
+                          color: chartPreset === pr.key ? 'rgba(46, 204, 113,0.95)' : 'rgba(255,255,255,0.55)',
                           cursor: 'pointer',
                           fontSize: 11,
                           fontWeight: 600
