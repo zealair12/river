@@ -84,7 +84,29 @@ Managed as npm workspaces. Each folder is its own package.
 | Postgres | Structured records and app state | Relational data that does not need graph traversal |
 | Redis | Job queues and cache | BullMQ backend and fast lookups |
 
-Start all three locally with `docker-compose up`. Copy `.env.example` to `.env` and fill in keys before running.
+Start all three locally with `docker-compose up`. Then create a `.env` file in the repo root before running.
+
+## Environment variables
+
+Create `.env` in the repo root. Do not commit real keys.
+
+```
+# River API (market, assistant proxy, etc.)
+PORT=3001
+
+# Traceback branching API (Vite dev proxy maps /traceback-api to http://localhost:4000)
+VITE_TRACEBACK_API_URL=/traceback-api
+
+# Optional: open the full Traceback web UI from the panel link
+# VITE_TRACEBACK_APP_URL=http://localhost:5173
+
+# Third-party, only if you use those features
+# FEC_API_KEY=
+# FINNHUB_API_KEY=
+# NEWSAPI_KEY=
+# GROQ_API_KEY=
+# OPENAI_API_KEY=
+```
 
 ## Data sources
 
